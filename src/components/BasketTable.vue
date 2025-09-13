@@ -1,16 +1,9 @@
 <script setup>
-import { computed } from 'vue'
 import BasketTableSummary from './BasketTableSummary.vue'
 import BasketTableItem from './BasketTableItem.vue'
-const props = defineProps({
-  basket: {
-    type: Array,
-    required: true,
-  },
-})
-const totalPrice = computed(() => {
-  return props.basket.reduce((totalPrice, item) => totalPrice + item.price * item.quantity, 0)
-})
+import { useBasketStore } from '@/stores/basket'
+
+const store = useBasketStore()
 </script>
 
 <template>
@@ -26,26 +19,26 @@ const totalPrice = computed(() => {
     </thead>
     <tbody class="basket-table__body">
       <BasketTableItem
-        v-for="(item, index) in basket"
+        v-for="(item, index) in store.basket"
         :key="item.id"
-        :="item"
-        @remove-item="$emit('remove-item', index)"
-        @increase-quantity="$emit('increase-quantity', item)"
-        @decrease-quantity="$emit('decrease-quantity', item)"
+        v-bind="item"
+        @increase-amount="store.increaseItemQuantity(item.id)"
+        @decrease-amount="store.decreaseItemQuantity(item.id)"
+        @remove-item="store.removeItem(index)"
       />
 
-      <BasketTableSummary v-if="basket.length > 0" :basket="basket" :total="totalPrice" />
-
-      <tr v-if="basket.length === 0">
+      <tr v-if="store.basket.length === 0">
         <td colspan="5">
           <p class="basket-table__empty">No items</p>
         </td>
       </tr>
+
+      <BasketTableSummary v-if="store.basket.length > 0" />
     </tbody>
   </table>
 </template>
 
-<style scoped>
+<style>
 .basket-table {
   width: 100%;
   border-collapse: collapse;
@@ -86,10 +79,5 @@ const totalPrice = computed(() => {
 
 .basket-table__body td:last-child {
   padding-right: 5rem;
-}
-
-.basket-table__empty {
-  text-align: center;
-  color: #a7a7a7;
 }
 </style>
