@@ -12,15 +12,15 @@ defineProps({
     type: Number,
     default: 1,
   },
+  imageUrl: {
+    type: String,
+    required: true,
+  },
   color: {
     type: String,
     required: true,
   },
   size: {
-    type: String,
-    required: true,
-  },
-  imageUrl: {
     type: String,
     required: true,
   },
@@ -36,26 +36,26 @@ defineProps({
         </div>
         <div class="basket-item__info">
           <h2 class="basket-item__info-h2">{{ name }}</h2>
-          <p class="basket-item__info-p">{{ color }}</p>
-          <p class="basket-item__info-p">{{ size }}</p>
+          <p class="basket-item__info-p">Color: {{ color }}</p>
+          <p class="basket-item__info-p">Size: {{ size }}</p>
         </div>
       </div>
     </td>
     <td>
-      <p class="basket-item__price">$ {{ price.toFixed(2) }}</p>
+      <p class="basket-item__price">$ {{ price }}</p>
     </td>
     <td>
       <div class="basket-item__quantity">
-        <button @click="$emit('decrease-quantity')" class="quantity-button">–</button>
+        <button class="quantity-button" @click="$emit('decrease-amount')">–</button>
         <input type="number" :value="quantity" min="1" />
-        <button @click="$emit('increase-quantity')" class="quantity-button">+</button>
+        <button class="quantity-button" @click="$emit('increase-amount')">+</button>
       </div>
     </td>
     <td>
-      <p class="basket-item__price">$ {{ (price * quantity).toFixed(2) }}</p>
+      <p class="basket-item__price">$ {{ price * quantity }}</p>
     </td>
     <td>
-      <button @click="$emit('remove-item')" class="btn btn-delete" aria-label="Удалить">
+      <button class="btn btn-delete" aria-label="Удалить" @click="$emit('remove-item')">
         <svg
           class="w-6 h-6 text-gray-800 dark:text-white"
           aria-hidden="true"
@@ -78,7 +78,7 @@ defineProps({
   </tr>
 </template>
 
-<style scoped>
+<style>
 .basket-item {
   display: flex;
   align-items: flex-start;
@@ -171,17 +171,8 @@ defineProps({
   margin: 0;
 }
 
-.basket-table__body td {
-  padding: 3rem 2rem;
+.basket-table__empty {
   text-align: center;
-}
-
-.basket-table__body td:first-child {
-  text-align: left;
-  padding-left: 5rem;
-}
-
-.basket-table__body td:last-child {
-  padding-right: 5rem;
+  color: #a7a7a7;
 }
 </style>
